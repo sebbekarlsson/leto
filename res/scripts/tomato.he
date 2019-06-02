@@ -1,0 +1,14 @@
+ref actor;
+
+void moveLeft()
+{
+    actor.x = actor.x - 1;
+};
+
+
+void moveRight()
+{
+    actor.x = actor.x + 1;
+};
+
+moveRight();
