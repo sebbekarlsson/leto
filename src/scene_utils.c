@@ -44,6 +44,8 @@ scene_T* _init_scene(database_T* database, database_scene_T* database_scene)
         dynamic_list_append(state->actors, _init_actor(database_actor_instance));
     }
 
+    // TODO: free database_actor_instances
+
     return s;
 }
 
@@ -59,4 +61,6 @@ void load_scenes(database_T* database)
 
         scene_manager_register_scene(THEATRE->scene_manager, scene);
     }
+
+    // TODO: free database_scenes
 }
