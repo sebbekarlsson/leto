@@ -2,7 +2,7 @@
 #define LETO_SCENE_IMPL_H
 #include <coelum/scene.h>
 #include <coelum/dynamic_list.h>
-#include <glad/glad.h> 
+//#include <glad/glad.h> 
 
 typedef struct SCENE_IMPL_STRUCT
 {
