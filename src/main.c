@@ -5,12 +5,15 @@
 #include <hermes/hermes_runtime.h>
 #include <coelum/scene.h>
 #include <coelum/theatre.h>
+#include <athena/database.h>
+#include "include/scene_utils.h"
 //#include "include/scene_impl.h"
 #include <stdio.h>
 #include <string.h>
 
 
 extern theatre_T* THEATRE;
+database_T* DATABASE;
 
 
 scene_T* init_scene_main()
@@ -27,6 +30,10 @@ scene_T* init_scene_main()
 int main(int argc, char* argv[])
 { 
     coelum_init();
+
+    DATABASE = init_database();
+
+    load_scenes(DATABASE);
 
     scene_manager_register_scene(THEATRE->scene_manager, (scene_T*) init_scene_main());
 
