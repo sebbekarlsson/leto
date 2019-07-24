@@ -1,4 +1,5 @@
 #include "include/actor_scriptable.h"
+#include "include/hermes_extensions.h"
 
 
 actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_source, char* draw_source, char* type_name)
@@ -40,6 +41,29 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_
     dynamic_list_append(scope->variable_definitions, as->y_var);
     dynamic_list_append(as->runtime_reference->object->object_children, as->y_var);
 
+    AST_T* fdef_keyboard_press_left = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_keyboard_press_left->function_name = "keyboard_press_left";
+    fdef_keyboard_press_left->fptr = keyboard_press_left;
+    fdef_keyboard_press_left->scope = (struct hermes_scope_T*) as->runtime->scope;
+    dynamic_list_append(as->runtime->scope->function_definitions, fdef_keyboard_press_left);
+
+    AST_T* fdef_keyboard_press_right = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_keyboard_press_right->function_name = "keyboard_press_right";
+    fdef_keyboard_press_right->fptr = keyboard_press_right;
+    fdef_keyboard_press_right->scope = (struct hermes_scope_T*) as->runtime->scope;
+    dynamic_list_append(as->runtime->scope->function_definitions, fdef_keyboard_press_right);
+
+    AST_T* fdef_keyboard_press_up = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_keyboard_press_up->function_name = "keyboard_press_up";
+    fdef_keyboard_press_up->fptr = keyboard_press_up;
+    fdef_keyboard_press_up->scope = (struct hermes_scope_T*) as->runtime->scope;
+    dynamic_list_append(as->runtime->scope->function_definitions, fdef_keyboard_press_up);
+
+    AST_T* fdef_keyboard_press_down = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_keyboard_press_down->function_name = "keyboard_press_down";
+    fdef_keyboard_press_down->fptr = keyboard_press_down;
+    fdef_keyboard_press_down->scope = (struct hermes_scope_T*) as->runtime->scope;
+    dynamic_list_append(as->runtime->scope->function_definitions, fdef_keyboard_press_down);
 
     as->runtime_reference->object->scope = (struct hermes_scope_T*) scope;
     runtime_register_reference(as->runtime, as->runtime_reference);
