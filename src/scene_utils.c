@@ -1,28 +1,34 @@
 #include "include/scene_utils.h"
+#include "include/actor_scriptable.h"
 #include <coelum/theatre.h>
 #include <coelum/actor.h>
+#include <hermes/io.h>
 
 
 extern theatre_T* THEATRE;
 
 
-actor_T* _init_actor(database_actor_instance_T* database_actor_instance)
+actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instance)
 {
-    actor_T* a = actor_constructor(
-        init_actor(),
+    char* tick_source = read_file(database_actor_instance->database_actor_definition->tick_script);
+    char* draw_source = read_file(database_actor_instance->database_actor_definition->draw_script);
+
+    actor_scriptable_T* actor_scriptable = init_actor_scriptable(
         database_actor_instance->x,
         database_actor_instance->y,
         database_actor_instance->z,
-        (void*) 0, // tick method
-        (void*) 0, // draw method
+        tick_source,
+        draw_source,
         database_actor_instance->database_actor_definition->name
     );
+
+    actor_T* a = (actor_T*) actor_scriptable;
 
     a->width = 16;
     a->height = 16;
     a->sprite = database_actor_instance->database_actor_definition->database_sprite->sprite;
 
-    return a; 
+    return actor_scriptable; 
 }
 
 scene_T* _init_scene(database_T* database, database_scene_T* database_scene)
