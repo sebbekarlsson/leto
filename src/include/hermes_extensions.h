@@ -2,7 +2,12 @@
 #define LETO_HERMES_EXTENSIONS_H
 #include <hermes/AST.h>
 #include <hermes/dynamic_list.h>
+#include <hermes/hermes_scope.h>
 
+
+void hermes_register_constants(hermes_scope_T* hermes_scope);
+
+AST_T* keyboard_press(dynamic_list_T* args);
 
 AST_T* keyboard_press_left(dynamic_list_T* args);
 
