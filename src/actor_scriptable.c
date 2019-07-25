@@ -58,10 +58,10 @@ void actor_scriptable_tick(actor_T* self)
    if (actor_scriptable->tick_source)
    {
        runtime_visit(HERMES_RUNTIME, actor_scriptable->ast_tree);
-
-       self->x = actor_scriptable->x_var->variable_value->int_value;
-       self->y = actor_scriptable->y_var->variable_value->int_value;
    }
+
+   self->x = actor_scriptable->x_var->variable_value->int_value;
+   self->y = actor_scriptable->y_var->variable_value->int_value;
 }
 
 void actor_scriptable_draw(actor_T* self)

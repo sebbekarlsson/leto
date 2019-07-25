@@ -1,4 +1,5 @@
 #include "include/hermes_extensions.h"
+#include "include/actor_scriptable.h"
 #include <coelum/input.h>
 #include <coelum/current.h>
 #include <coelum/actor.h>
@@ -82,11 +83,12 @@ AST_T* get_intersecting(dynamic_list_T* args)
             {
                 if (this_y + 16 >= actor->y && this_y <= actor->y + 16)
                 {
-                    printf("collision\n");
+                    actor_scriptable_T* actor_scriptable = (actor_scriptable_T*) actor;
+                    return actor_scriptable->runtime_reference->object;
                 }
             }
         }
     }
 
-    return ast_string;
+    return init_ast(AST_NULL);
 }
