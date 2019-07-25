@@ -14,7 +14,6 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
 
     lexer_T* lexer;
     hermes_parser_T* hermes_parser;
-    runtime_T* runtime;
     runtime_reference_T* runtime_reference;
 
     AST_T* ast_tree;

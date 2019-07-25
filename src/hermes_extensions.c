@@ -1,5 +1,8 @@
 #include "include/hermes_extensions.h"
 #include <coelum/input.h>
+#include <coelum/current.h>
+#include <coelum/actor.h>
+#include <string.h>
 
 
 extern keyboard_state_T* KEYBOARD_STATE;
@@ -42,4 +45,48 @@ AST_T* keyboard_press(dynamic_list_T* args)
     ast->boolean_value = KEYBOARD_STATE->keys[ast_int->int_value];
 
     return ast;
+}
+
+AST_T* get_intersecting(dynamic_list_T* args)
+{
+    AST_T* ast_object = (AST_T*) args->items[0];
+    AST_T* ast_string = (AST_T*) args->items[1];
+    char* type_name = ast_string->string_value;
+
+    scene_T* scene = get_current_scene();
+    state_T* state = (state_T*) scene;
+
+    int this_x = 0;
+    int this_y = 0;
+
+    hermes_scope_T* runtime_scope = (hermes_scope_T*) ast_object->scope;
+
+    for (int j = 0; j < ast_object->object_children->size; j++)
+    {
+        AST_T* ast_obj_var = (AST_T*) ast_object->object_children->items[j];
+        
+        if (strcmp(ast_obj_var->variable_name, "x") == 0)
+            this_x = ast_obj_var->variable_value->int_value;
+
+        if (strcmp(ast_obj_var->variable_name, "y") == 0)
+            this_y = ast_obj_var->variable_value->int_value;
+    }
+
+    for (int i = 0; i < state->actors->size; i++)
+    {
+        actor_T* actor = (actor_T*) state->actors->items[i];
+
+        if (strcmp(actor->type_name, type_name) == 0)
+        {
+            if (this_x + 16 >= actor->x && this_x <= actor->x + 16)
+            {
+                if (this_y + 16 >= actor->y && this_y <= actor->y + 16)
+                {
+                    printf("collision\n");
+                }
+            }
+        }
+    }
+
+    return ast_string;
 }

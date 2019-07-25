@@ -16,4 +16,6 @@ AST_T* keyboard_press_right(dynamic_list_T* args);
 AST_T* keyboard_press_up(dynamic_list_T* args);
 
 AST_T* keyboard_press_down(dynamic_list_T* args);
+
+AST_T* get_intersecting(dynamic_list_T* args);
 #endif
