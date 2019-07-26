@@ -13,6 +13,7 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     char* draw_source;
 
     lexer_T* lexer;
+    hermes_scope_T* scope;
     hermes_parser_T* hermes_parser;
     runtime_reference_T* runtime_reference;
 

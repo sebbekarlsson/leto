@@ -15,8 +15,13 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_
     if (as->tick_source)
     {
         as->lexer = init_lexer(as->tick_source);
+        as->scope = init_hermes_scope();
         as->hermes_parser = init_hermes_parser(as->lexer);
-        as->ast_tree = hermes_parser_parse(as->hermes_parser, (void*) 0); 
+        as->ast_tree = hermes_parser_parse(as->hermes_parser, as->scope); 
+    }
+    else
+    {
+        as->scope = (void*) 0;
     }
 
     as->runtime_reference = init_runtime_reference();
@@ -62,6 +67,11 @@ void actor_scriptable_tick(actor_T* self)
 
    self->x = actor_scriptable->x_var->variable_value->int_value;
    self->y = actor_scriptable->y_var->variable_value->int_value;
+
+   if (actor_scriptable->scope != (void*) 0)
+   {
+       hermes_scope_clear_variable_definitions(actor_scriptable->scope);
+   }
 }
 
 void actor_scriptable_draw(actor_T* self)

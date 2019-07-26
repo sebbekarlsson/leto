@@ -84,6 +84,7 @@ AST_T* get_intersecting(dynamic_list_T* args)
                 if (this_y + 16 >= actor->y && this_y <= actor->y + 16)
                 {
                     actor_scriptable_T* actor_scriptable = (actor_scriptable_T*) actor;
+
                     return actor_scriptable->runtime_reference->object;
                 }
             }
