@@ -20,6 +20,9 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     AST_T* ast_tree;
     AST_T* x_var;
     AST_T* y_var;
+
+    AST_T* ast_object;
+    AST_T* ast_variable_this;
 } actor_scriptable_T;
 
 actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_source, char* draw_source, char* type_name);

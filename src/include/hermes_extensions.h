@@ -20,4 +20,10 @@ AST_T* keyboard_press_down(dynamic_list_T* args);
 AST_T* get_intersecting(dynamic_list_T* args);
 
 AST_T* actor_instantiate(dynamic_list_T* args);
+
+AST_T* scene_goto(dynamic_list_T* args);
+
+AST_T* math_cos(dynamic_list_T* args);
+
+AST_T* time_now(dynamic_list_T* args);
 #endif

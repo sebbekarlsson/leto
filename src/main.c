@@ -39,6 +39,24 @@ void setup_hermes_env()
     fdef_actor_instantiate->fptr = actor_instantiate;
     fdef_actor_instantiate->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
     dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_actor_instantiate);
+
+    AST_T* fdef_scene_goto = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_scene_goto->function_name = "scene_goto";
+    fdef_scene_goto->fptr = scene_goto;
+    fdef_scene_goto->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_scene_goto);
+
+    AST_T* fdef_math_cos = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_math_cos->function_name = "math_cos";
+    fdef_math_cos->fptr = math_cos;
+    fdef_math_cos->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_math_cos);
+
+    AST_T* fdef_time_now = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_time_now->function_name = "time_now";
+    fdef_time_now->fptr = time_now;
+    fdef_time_now->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_time_now);
 }
 
 scene_T* init_scene_main()

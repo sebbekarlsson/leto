@@ -3,11 +3,14 @@
 #include <coelum/input.h>
 #include <coelum/current.h>
 #include <coelum/actor.h>
+#include <coelum/theatre.h>
 #include <athena/database.h>
 #include <hermes/io.h>
 #include <string.h>
+#include <time.h>
 
 
+extern theatre_T* THEATRE;
 extern keyboard_state_T* KEYBOARD_STATE;
 extern database_T* DATABASE;
 
@@ -17,7 +20,8 @@ int INTEGER_CONSTANTS_VALUES[] = {
     GLFW_KEY_RIGHT,
     GLFW_KEY_UP,
     GLFW_KEY_DOWN,
-    GLFW_KEY_ENTER
+    GLFW_KEY_ENTER,
+    GLFW_KEY_SPACE
 };
 
 char* INTEGER_CONSTANTS_NAMES[] = {
@@ -25,12 +29,13 @@ char* INTEGER_CONSTANTS_NAMES[] = {
     "KEY_RIGHT",
     "KEY_UP",
     "KEY_DOWN",
-    "KEY_ENTER"
+    "KEY_ENTER",
+    "KEY_SPACE"
 };
 
 void hermes_register_constants(hermes_scope_T* hermes_scope)
 {
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 6; i++)
     {
         AST_T* ast = init_ast(AST_VARIABLE_DEFINITION);
         ast->variable_name = INTEGER_CONSTANTS_NAMES[i];
@@ -110,7 +115,7 @@ AST_T* get_intersecting(dynamic_list_T* args)
                 {
                     actor_scriptable_T* actor_scriptable = (actor_scriptable_T*) actor;
 
-                    return actor_scriptable->runtime_reference->object;
+                    return actor_scriptable->ast_object;
                 }
             }
         }
@@ -162,4 +167,35 @@ AST_T* actor_instantiate(dynamic_list_T* args)
     dynamic_list_append(state->actors, actor_scriptable);
 
     return actor_scriptable->runtime_reference->object;
+}
+
+AST_T* scene_goto(dynamic_list_T* args)
+{
+    const char* fname = "scene_goto";
+
+    AST_T* ast_string_name = expect_arg(fname, args, 0, AST_STRING);
+
+    scene_manager_goto(THEATRE->scene_manager, ast_string_name->string_value);
+    
+    return init_ast(AST_NULL);
+}
+
+AST_T* math_cos(dynamic_list_T* args)
+{
+    const char* fname = "math_cos";
+
+    AST_T* ast_float = expect_arg(fname, args, 0, AST_FLOAT);
+
+    AST_T* ast_result = init_ast(AST_FLOAT);
+    ast_result->float_value = cos(ast_float->float_value);
+
+    return ast_result;
+}
+
+AST_T* time_now(dynamic_list_T* args)
+{
+    AST_T* ast_result = init_ast(AST_INTEGER);
+    ast_result->int_value = (int) time(NULL);
+
+    return ast_result;
 }
