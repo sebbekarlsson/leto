@@ -39,37 +39,59 @@ static AST_T* setup_ast_object(actor_scriptable_T* as)
     return object;
 }
 
-actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_source, char* draw_source, char* type_name)
+actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_source, char* tick_source, char* draw_source, char* type_name)
 {
     actor_scriptable_T* as = calloc(1, sizeof(struct ACTOR_SCRIPTABLE_STRUCT));
     actor_T* a = (actor_T*) as;
     actor_constructor(a, x, y, z, actor_scriptable_tick, actor_scriptable_draw, type_name);
 
+    as->init_source = init_source;
     as->tick_source = tick_source;
     as->draw_source = draw_source;
 
+        if (as->init_source)
+        {
+            as->init_source_scope = init_hermes_scope();
+        }
+        else
+        {
+            as->init_source_scope = (void*) 0;
+        }
+
+        if (as->tick_source)
+        {
+            as->tick_source_scope = init_hermes_scope();
+        }
+        else
+        {
+            as->tick_source_scope = (void*) 0;
+        }
+
+    if (as->init_source)
+    {
+        as->init_source_lexer = init_lexer(as->init_source);
+        as->init_source_hermes_parser = init_hermes_parser(as->init_source_lexer);
+        as->init_source_ast_tree = hermes_parser_parse(as->init_source_hermes_parser, as->init_source_scope); 
+    }
+
     if (as->tick_source)
     {
-        as->lexer = init_lexer(as->tick_source);
-        as->scope = init_hermes_scope();
-        as->hermes_parser = init_hermes_parser(as->lexer);
-        as->ast_tree = hermes_parser_parse(as->hermes_parser, as->scope); 
-    }
-    else
-    {
-        as->scope = (void*) 0;
+        as->tick_source_lexer = init_lexer(as->tick_source);
+        as->tick_source_hermes_parser = init_hermes_parser(as->tick_source_lexer);
+        as->tick_source_ast_tree = hermes_parser_parse(as->tick_source_hermes_parser, as->tick_source_scope); 
     }
 
     as->ast_object = setup_ast_object(as);
 
-    as->runtime_reference = init_runtime_reference();
-    as->runtime_reference->object->variable_name = "actor";
+    if (as->init_source)
+    {
+        dynamic_list_append(
+            as->init_source_scope->variable_definitions,
+            as->ast_variable_this
+        );
 
-    hermes_scope_T* scope = init_hermes_scope();
-    scope->owner = as->runtime_reference->object; 
-
-    as->runtime_reference->object->scope = (struct hermes_scope_T*) scope;
-    runtime_register_reference(HERMES_RUNTIME, as->runtime_reference);
+        runtime_visit(HERMES_RUNTIME, as->init_source_ast_tree);
+    }
 
     return as;
 }
@@ -78,25 +100,35 @@ void actor_scriptable_tick(actor_T* self)
 {
     actor_scriptable_T* actor_scriptable = (actor_scriptable_T*) self;
 
-    if (actor_scriptable->scope != (void*) 0)
+    if (actor_scriptable->init_source_scope != (void*) 0)
+    {
+        for (int i = 0; i < actor_scriptable->init_source_scope->variable_definitions->size; i++)
+        {
+            AST_T* vardef = actor_scriptable->init_source_scope->variable_definitions->items[i];
+
+            dynamic_list_append(actor_scriptable->tick_source_scope->variable_definitions, vardef);
+        }
+    }
+
+    if (actor_scriptable->tick_source_scope != (void*) 0)
     {
         dynamic_list_append(
-            actor_scriptable->scope->variable_definitions,
+            actor_scriptable->tick_source_scope->variable_definitions,
             actor_scriptable->ast_variable_this
         );
     }
 
     if (actor_scriptable->tick_source)
     {
-        runtime_visit(HERMES_RUNTIME, actor_scriptable->ast_tree);
+        runtime_visit(HERMES_RUNTIME, actor_scriptable->tick_source_ast_tree);
     }
 
     self->x = actor_scriptable->x_var->variable_value->int_value;
     self->y = actor_scriptable->y_var->variable_value->int_value;
 
-    if (actor_scriptable->scope != (void*) 0)
+    if (actor_scriptable->tick_source_scope != (void*) 0)
     {
-        hermes_scope_clear_variable_definitions(actor_scriptable->scope);
+        hermes_scope_clear_variable_definitions(actor_scriptable->tick_source_scope);
     }
 }
 

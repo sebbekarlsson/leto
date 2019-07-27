@@ -52,6 +52,12 @@ void setup_hermes_env()
     fdef_math_cos->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
     dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_math_cos);
 
+    AST_T* fdef_math_sin = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_math_sin->function_name = "math_sin";
+    fdef_math_sin->fptr = math_sin;
+    fdef_math_sin->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_math_sin);
+
     AST_T* fdef_time_now = init_ast(AST_FUNCTION_DEFINITION);
     fdef_time_now->function_name = "time_now";
     fdef_time_now->fptr = time_now;

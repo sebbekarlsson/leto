@@ -25,5 +25,7 @@ AST_T* scene_goto(dynamic_list_T* args);
 
 AST_T* math_cos(dynamic_list_T* args);
 
+AST_T* math_sin(dynamic_list_T* args);
+
 AST_T* time_now(dynamic_list_T* args);
 #endif

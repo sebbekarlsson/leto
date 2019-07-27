@@ -10,8 +10,12 @@ extern theatre_T* THEATRE;
 
 actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instance)
 {
+    char* init_source = (void*) 0;
     char* tick_source = (void*) 0;
     char* draw_source = (void*) 0;
+
+    if (database_actor_instance->database_actor_definition->init_script)
+        init_source = read_file(database_actor_instance->database_actor_definition->init_script);
 
     if (database_actor_instance->database_actor_definition->tick_script)
         tick_source = read_file(database_actor_instance->database_actor_definition->tick_script);
@@ -23,6 +27,7 @@ actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instan
         database_actor_instance->x,
         database_actor_instance->y,
         database_actor_instance->z,
+        init_source,
         tick_source,
         draw_source,
         database_actor_instance->database_actor_definition->name

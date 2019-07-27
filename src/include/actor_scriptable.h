@@ -9,15 +9,21 @@
 typedef struct ACTOR_SCRIPTABLE_STRUCT
 {
     actor_T base;
+    char* init_source;
     char* tick_source;
     char* draw_source;
 
-    lexer_T* lexer;
-    hermes_scope_T* scope;
-    hermes_parser_T* hermes_parser;
-    runtime_reference_T* runtime_reference;
+    hermes_scope_T* init_source_scope;
+    hermes_scope_T* tick_source_scope;
 
-    AST_T* ast_tree;
+    lexer_T* init_source_lexer;
+    hermes_parser_T* init_source_hermes_parser;
+
+    lexer_T* tick_source_lexer;
+    hermes_parser_T* tick_source_hermes_parser;
+
+    AST_T* init_source_ast_tree;
+    AST_T* tick_source_ast_tree;
     AST_T* x_var;
     AST_T* y_var;
 
@@ -25,7 +31,7 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     AST_T* ast_variable_this;
 } actor_scriptable_T;
 
-actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* tick_source, char* draw_source, char* type_name);
+actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_source, char* tick_source, char* draw_source, char* type_name);
 
 void actor_scriptable_tick(actor_T* self);
 

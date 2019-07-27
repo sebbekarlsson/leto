@@ -140,9 +140,13 @@ AST_T* actor_instantiate(dynamic_list_T* args)
         (const char*) ast_string_name->string_value
     );
 
+    char* init_source = (void*) 0;
     char* tick_source = (void*) 0;
     char* draw_source = (void*) 0;
 
+    if (database_actor_definition->init_script)
+        init_source = read_file(database_actor_definition->init_script);
+    
     if (database_actor_definition->tick_script)
         tick_source = read_file(database_actor_definition->tick_script);
     
@@ -153,6 +157,7 @@ AST_T* actor_instantiate(dynamic_list_T* args)
         (float) ast_int_x->int_value,
         (float) ast_int_y->int_value,
         0.0f,
+        init_source,
         tick_source,
         draw_source,
         database_actor_definition->name
@@ -166,7 +171,7 @@ AST_T* actor_instantiate(dynamic_list_T* args)
 
     dynamic_list_append(state->actors, actor_scriptable);
 
-    return actor_scriptable->runtime_reference->object;
+    return actor_scriptable->ast_object;
 }
 
 AST_T* scene_goto(dynamic_list_T* args)
@@ -188,6 +193,18 @@ AST_T* math_cos(dynamic_list_T* args)
 
     AST_T* ast_result = init_ast(AST_FLOAT);
     ast_result->float_value = cos(ast_float->float_value);
+
+    return ast_result;
+}
+
+AST_T* math_sin(dynamic_list_T* args)
+{
+    const char* fname = "math_sin";
+
+    AST_T* ast_float = expect_arg(fname, args, 0, AST_FLOAT);
+
+    AST_T* ast_result = init_ast(AST_FLOAT);
+    ast_result->float_value = sin(ast_float->float_value);
 
     return ast_result;
 }
