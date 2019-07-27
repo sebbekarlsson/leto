@@ -3,29 +3,34 @@
 #include <coelum/input.h>
 #include <coelum/current.h>
 #include <coelum/actor.h>
+#include <athena/database.h>
+#include <hermes/io.h>
 #include <string.h>
 
 
 extern keyboard_state_T* KEYBOARD_STATE;
+extern database_T* DATABASE;
 
 
 int INTEGER_CONSTANTS_VALUES[] = {
     GLFW_KEY_LEFT,
     GLFW_KEY_RIGHT,
     GLFW_KEY_UP,
-    GLFW_KEY_DOWN
+    GLFW_KEY_DOWN,
+    GLFW_KEY_ENTER
 };
 
 char* INTEGER_CONSTANTS_NAMES[] = {
     "KEY_LEFT",
     "KEY_RIGHT",
     "KEY_UP",
-    "KEY_DOWN"
+    "KEY_DOWN",
+    "KEY_ENTER"
 };
 
 void hermes_register_constants(hermes_scope_T* hermes_scope)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 5; i++)
     {
         AST_T* ast = init_ast(AST_VARIABLE_DEFINITION);
         ast->variable_name = INTEGER_CONSTANTS_NAMES[i];
@@ -36,6 +41,26 @@ void hermes_register_constants(hermes_scope_T* hermes_scope)
 
         dynamic_list_append(hermes_scope->variable_definitions, ast);
     } 
+}
+
+static AST_T* expect_arg(const char* function_name, dynamic_list_T* args, unsigned int index, int type)
+{
+    if (args->size < index)
+    {
+        printf("%s:\n", function_name);
+        printf("Not enough arguments\n");
+        exit(1);
+    }
+
+    AST_T* ast = args->items[index];
+
+    if (ast->type != type)
+    {
+        printf("%s:\n", function_name);
+        printf("Wrong type for argument %d\n", index);
+    }
+
+    return ast;
 }
 
 AST_T* keyboard_press(dynamic_list_T* args)
@@ -92,4 +117,49 @@ AST_T* get_intersecting(dynamic_list_T* args)
     }
 
     return init_ast(AST_NULL);
+}
+
+AST_T* actor_instantiate(dynamic_list_T* args)
+{
+    const char* fname = "actor_instantiate";
+
+    AST_T* ast_string_name = expect_arg(fname, args, 0, AST_STRING);
+    AST_T* ast_int_x = expect_arg(fname, args, 1, AST_INTEGER);
+    AST_T* ast_int_y = expect_arg(fname, args, 2, AST_INTEGER);
+
+    scene_T* scene = get_current_scene();
+    state_T* state = (state_T*) scene;
+
+    database_actor_definition_T* database_actor_definition = database_get_actor_definition_by_name(
+        DATABASE,
+        (const char*) ast_string_name->string_value
+    );
+
+    char* tick_source = (void*) 0;
+    char* draw_source = (void*) 0;
+
+    if (database_actor_definition->tick_script)
+        tick_source = read_file(database_actor_definition->tick_script);
+    
+    if (database_actor_definition->draw_script)
+        draw_source = read_file(database_actor_definition->draw_script);
+
+    actor_scriptable_T* actor_scriptable = init_actor_scriptable(
+        (float) ast_int_x->int_value,
+        (float) ast_int_y->int_value,
+        0.0f,
+        tick_source,
+        draw_source,
+        database_actor_definition->name
+    );
+
+    actor_T* a = (actor_T*) actor_scriptable;
+
+    a->width = 16;
+    a->height = 16;
+    a->sprite = database_actor_definition->database_sprite->sprite;
+
+    dynamic_list_append(state->actors, actor_scriptable);
+
+    return actor_scriptable->runtime_reference->object;
 }

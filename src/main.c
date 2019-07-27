@@ -32,7 +32,13 @@ void setup_hermes_env()
     fdef_get_intersecting->function_name = "get_intersecting";
     fdef_get_intersecting->fptr = get_intersecting;
     fdef_get_intersecting->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
-    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_get_intersecting); 
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_get_intersecting);
+
+    AST_T* fdef_actor_instantiate = init_ast(AST_FUNCTION_DEFINITION);
+    fdef_actor_instantiate->function_name = "actor_instantiate";
+    fdef_actor_instantiate->fptr = actor_instantiate;
+    fdef_actor_instantiate->scope = (struct hermes_scope_T*) HERMES_RUNTIME->scope;
+    dynamic_list_append(HERMES_RUNTIME->scope->function_definitions, fdef_actor_instantiate);
 }
 
 scene_T* init_scene_main()
