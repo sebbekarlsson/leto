@@ -109,9 +109,9 @@ AST_T* get_intersecting(dynamic_list_T* args)
 
         if (strcmp(actor->type_name, type_name) == 0)
         {
-            if (this_x + 16 >= actor->x && this_x <= actor->x + 16)
+            if (this_x + 16 > actor->x && this_x < actor->x + 16)
             {
-                if (this_y + 16 >= actor->y && this_y <= actor->y + 16)
+                if (this_y + 16 > actor->y && this_y < actor->y + 16)
                 {
                     actor_scriptable_T* actor_scriptable = (actor_scriptable_T*) actor;
 
