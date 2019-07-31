@@ -37,7 +37,14 @@ actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instan
 
     a->width = 16;
     a->height = 16;
-    a->sprite = database_actor_instance->database_actor_definition->database_sprite->sprite;
+
+    if (database_actor_instance->database_actor_definition->database_sprite != (void*) 0)
+    {
+        if (database_actor_instance->database_actor_definition->database_sprite->sprite != (void*) 0)
+        {
+            a->sprite = database_actor_instance->database_actor_definition->database_sprite->sprite;
+        }
+    }
 
     return actor_scriptable; 
 }
