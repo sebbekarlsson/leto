@@ -6,6 +6,7 @@
 
 
 extern theatre_T* THEATRE;
+extern database_T* DATABASE;
 
 
 actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instance)
@@ -14,14 +15,23 @@ actor_scriptable_T* _init_actor(database_actor_instance_T* database_actor_instan
     char* tick_source = (void*) 0;
     char* draw_source = (void*) 0;
 
-    if (database_actor_instance->database_actor_definition->init_script)
-        init_source = read_file(database_actor_instance->database_actor_definition->init_script);
+    if (database_actor_instance->database_actor_definition->init_script_id)
+    {
+        database_script_T* script = database_get_script_by_id(DATABASE, database_actor_instance->database_actor_definition->init_script_id);
+        init_source = script->contents;
+    }
 
-    if (database_actor_instance->database_actor_definition->tick_script)
-        tick_source = read_file(database_actor_instance->database_actor_definition->tick_script);
+    if (database_actor_instance->database_actor_definition->tick_script_id)
+    {
+        database_script_T* script = database_get_script_by_id(DATABASE, database_actor_instance->database_actor_definition->tick_script_id);
+        tick_source = script->contents;
+    }
     
-    if (database_actor_instance->database_actor_definition->draw_script)
-        draw_source = read_file(database_actor_instance->database_actor_definition->draw_script);
+    if (database_actor_instance->database_actor_definition->draw_script_id)
+    {
+        database_script_T* script = database_get_script_by_id(DATABASE, database_actor_instance->database_actor_definition->draw_script_id);
+        draw_source = script->contents;
+    }
 
     actor_scriptable_T* actor_scriptable = init_actor_scriptable(
         database_actor_instance->x,
