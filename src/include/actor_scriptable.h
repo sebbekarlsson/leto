@@ -1,7 +1,7 @@
 #ifndef LETO_ACTOR_SCRIPTABLE_H
 #define LETO_ACTOR_SCRIPTABLE_H
 #include <coelum/actor.h>
-#include <hermes/lexer.h>
+#include <hermes/hermes_lexer.h>
 #include <hermes/hermes_parser.h>
 #include <hermes/hermes_runtime.h>
 
@@ -16,10 +16,10 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     hermes_scope_T* init_source_scope;
     hermes_scope_T* tick_source_scope;
 
-    lexer_T* init_source_lexer;
+    hermes_lexer_T* init_source_hermes_lexer;
     hermes_parser_T* init_source_hermes_parser;
 
-    lexer_T* tick_source_lexer;
+    hermes_lexer_T* tick_source_hermes_lexer;
     hermes_parser_T* tick_source_hermes_parser;
 
     AST_T* init_source_ast_tree;

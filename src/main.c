@@ -1,6 +1,6 @@
 #include <coelum/main.h>
 #include <coelum/io.h>
-#include <hermes/lexer.h>
+#include <hermes/hermes_lexer.h>
 #include <hermes/hermes_parser.h>
 #include <hermes/hermes_runtime.h>
 #include <coelum/scene.h>

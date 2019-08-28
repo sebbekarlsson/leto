@@ -69,15 +69,15 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_
 
     if (as->init_source)
     {
-        as->init_source_lexer = init_lexer(as->init_source);
-        as->init_source_hermes_parser = init_hermes_parser(as->init_source_lexer);
+        as->init_source_hermes_lexer = init_hermes_lexer(as->init_source);
+        as->init_source_hermes_parser = init_hermes_parser(as->init_source_hermes_lexer);
         as->init_source_ast_tree = hermes_parser_parse(as->init_source_hermes_parser, as->init_source_scope); 
     }
 
     if (as->tick_source)
     {
-        as->tick_source_lexer = init_lexer(as->tick_source);
-        as->tick_source_hermes_parser = init_hermes_parser(as->tick_source_lexer);
+        as->tick_source_hermes_lexer = init_hermes_lexer(as->tick_source);
+        as->tick_source_hermes_parser = init_hermes_parser(as->tick_source_hermes_lexer);
         as->tick_source_ast_tree = hermes_parser_parse(as->tick_source_hermes_parser, as->tick_source_scope); 
     }
 
