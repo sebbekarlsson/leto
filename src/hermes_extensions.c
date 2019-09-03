@@ -129,8 +129,8 @@ AST_T* actor_instantiate(dynamic_list_T* args)
     const char* fname = "actor_instantiate";
 
     AST_T* ast_string_name = expect_arg(fname, args, 0, AST_STRING);
-    AST_T* ast_int_x = expect_arg(fname, args, 1, AST_INTEGER);
-    AST_T* ast_int_y = expect_arg(fname, args, 2, AST_INTEGER);
+    AST_T* ast_float_x = expect_arg(fname, args, 1, AST_FLOAT);
+    AST_T* ast_float_y = expect_arg(fname, args, 2, AST_FLOAT);
 
     scene_T* scene = get_current_scene();
     state_T* state = (state_T*) scene;
@@ -163,8 +163,8 @@ AST_T* actor_instantiate(dynamic_list_T* args)
     }
 
     actor_scriptable_T* actor_scriptable = init_actor_scriptable(
-        (float) ast_int_x->int_value,
-        (float) ast_int_y->int_value,
+        ast_float_x->float_value,
+        ast_float_y->float_value,
         0.0f,
         init_source,
         tick_source,
