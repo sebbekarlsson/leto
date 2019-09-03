@@ -152,6 +152,9 @@ void actor_scriptable_tick(actor_T* self)
         runtime_visit(HERMES_RUNTIME, actor_scriptable->tick_source_ast_tree);
     }
 
+    self->x = actor_scriptable->x_var->variable_value->float_value;
+    self->y = actor_scriptable->y_var->variable_value->float_value;
+
     self->dx = actor_scriptable->dx_var->variable_value->float_value;
     self->dy = actor_scriptable->dy_var->variable_value->float_value;
     self->friction = actor_scriptable->friction_var->variable_value->float_value;
