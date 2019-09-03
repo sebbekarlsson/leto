@@ -1,4 +1,5 @@
 #include "include/actor_scriptable.h"
+#include <coelum/physics.h>
 
 
 extern runtime_T* HERMES_RUNTIME;
@@ -15,20 +16,47 @@ static AST_T* setup_ast_object(actor_scriptable_T* as)
     // x
     as->x_var = init_ast(AST_VARIABLE_DEFINITION);
     as->x_var->variable_name = "x";
-    as->x_var->variable_value = init_ast(AST_INTEGER);
+    as->x_var->variable_value = init_ast(AST_FLOAT);
     as->x_var->variable_type = init_ast(AST_TYPE);
-    as->x_var->variable_type->type_value = "int";
-    as->x_var->variable_value->int_value = a->x;
+    as->x_var->variable_type->type_value = "float";
+    as->x_var->variable_value->float_value = a->x;
     dynamic_list_append(obj_children, as->x_var);
 
     // y
     as->y_var = init_ast(AST_VARIABLE_DEFINITION);
     as->y_var->variable_name = "y";
-    as->y_var->variable_value = init_ast(AST_INTEGER);
+    as->y_var->variable_value = init_ast(AST_FLOAT);
     as->y_var->variable_type = init_ast(AST_TYPE);
-    as->y_var->variable_type->type_value = "int";
-    as->y_var->variable_value->int_value = a->y;
+    as->y_var->variable_type->type_value = "float";
+    as->y_var->variable_value->float_value = a->y;
     dynamic_list_append(obj_children, as->y_var);
+
+    // dx
+    as->dx_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->dx_var->variable_name = "dx";
+    as->dx_var->variable_value = init_ast(AST_FLOAT);
+    as->dx_var->variable_type = init_ast(AST_TYPE);
+    as->dx_var->variable_type->type_value = "float";
+    as->dx_var->variable_value->float_value = a->dx;
+    dynamic_list_append(obj_children, as->dx_var);
+
+    // dy
+    as->dy_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->dy_var->variable_name = "dy";
+    as->dy_var->variable_value = init_ast(AST_FLOAT);
+    as->dy_var->variable_type = init_ast(AST_TYPE);
+    as->dy_var->variable_type->type_value = "float";
+    as->dy_var->variable_value->float_value = a->dy;
+    dynamic_list_append(obj_children, as->dy_var);
+
+    // friction
+    as->friction_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->friction_var->variable_name = "friction";
+    as->friction_var->variable_value = init_ast(AST_FLOAT);
+    as->friction_var->variable_type = init_ast(AST_TYPE);
+    as->friction_var->variable_type->type_value = "float";
+    as->friction_var->variable_value->float_value = a->friction;
+    dynamic_list_append(obj_children, as->friction_var);
 
     as->ast_variable_this = init_ast(AST_VARIABLE_DEFINITION);
     as->ast_variable_this->variable_type = init_ast(AST_TYPE);
@@ -48,24 +76,25 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_
     as->init_source = init_source;
     as->tick_source = tick_source;
     as->draw_source = draw_source;
+    a->friction = 0.1f;
 
-        if (as->init_source)
-        {
-            as->init_source_scope = init_hermes_scope();
-        }
-        else
-        {
-            as->init_source_scope = (void*) 0;
-        }
+    if (as->init_source)
+    {
+        as->init_source_scope = init_hermes_scope();
+    }
+    else
+    {
+        as->init_source_scope = (void*) 0;
+    }
 
-        if (as->tick_source)
-        {
-            as->tick_source_scope = init_hermes_scope();
-        }
-        else
-        {
-            as->tick_source_scope = (void*) 0;
-        }
+    if (as->tick_source)
+    {
+        as->tick_source_scope = init_hermes_scope();
+    }
+    else
+    {
+        as->tick_source_scope = (void*) 0;
+    }
 
     if (as->init_source)
     {
@@ -123,12 +152,22 @@ void actor_scriptable_tick(actor_T* self)
         runtime_visit(HERMES_RUNTIME, actor_scriptable->tick_source_ast_tree);
     }
 
-    self->x = actor_scriptable->x_var->variable_value->int_value;
-    self->y = actor_scriptable->y_var->variable_value->int_value;
+    self->dx = actor_scriptable->dx_var->variable_value->float_value;
+    self->dy = actor_scriptable->dy_var->variable_value->float_value;
+    self->friction = actor_scriptable->friction_var->variable_value->float_value;
+
+    physics_tick_actor(self);
+
+    actor_scriptable->dx_var->variable_value->float_value = self->dx;
+    actor_scriptable->dy_var->variable_value->float_value = self->dy;
+
+    actor_scriptable->x_var->variable_value->float_value = self->x;
+    actor_scriptable->y_var->variable_value->float_value = self->y;
 
     if (actor_scriptable->tick_source_scope != (void*) 0)
     {
         hermes_scope_clear_variable_definitions(actor_scriptable->tick_source_scope);
+        hermes_scope_clear_function_definitions(actor_scriptable->tick_source_scope);
     }
 }
 

@@ -26,6 +26,9 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     AST_T* tick_source_ast_tree;
     AST_T* x_var;
     AST_T* y_var;
+    AST_T* dx_var;
+    AST_T* dy_var;
+    AST_T* friction_var;
 
     AST_T* ast_object;
     AST_T* ast_variable_this;
