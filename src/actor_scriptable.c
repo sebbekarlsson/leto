@@ -163,9 +163,13 @@ void actor_scriptable_tick(actor_T* self)
 
     actor_scriptable->dx_var->variable_value->float_value = self->dx;
     actor_scriptable->dy_var->variable_value->float_value = self->dy;
+    actor_scriptable->dx_var->variable_value->int_value = self->dx;
+    actor_scriptable->dy_var->variable_value->int_value = self->dy;
 
     actor_scriptable->x_var->variable_value->float_value = self->x;
     actor_scriptable->y_var->variable_value->float_value = self->y;
+    actor_scriptable->x_var->variable_value->int_value = self->x;
+    actor_scriptable->y_var->variable_value->int_value = self->y;
 
     if (actor_scriptable->tick_source_scope != (void*) 0)
     {
