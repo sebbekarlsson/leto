@@ -58,11 +58,40 @@ static AST_T* setup_ast_object(actor_scriptable_T* as)
     as->friction_var->variable_value->float_value = a->friction;
     dynamic_list_append(obj_children, as->friction_var);
 
+    // rx
+    as->rx_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->rx_var->variable_name = "rx";
+    as->rx_var->variable_value = init_ast(AST_FLOAT);
+    as->rx_var->variable_type = init_ast(AST_TYPE);
+    as->rx_var->variable_type->type_value = "float";
+    as->rx_var->variable_value->float_value = a->rx;
+    dynamic_list_append(obj_children, as->rx_var);
+
+    // ry
+    as->ry_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->ry_var->variable_name = "ry";
+    as->ry_var->variable_value = init_ast(AST_FLOAT);
+    as->ry_var->variable_type = init_ast(AST_TYPE);
+    as->ry_var->variable_type->type_value = "float";
+    as->ry_var->variable_value->float_value = a->ry;
+    dynamic_list_append(obj_children, as->ry_var);
+
+    // rz
+    as->rz_var = init_ast(AST_VARIABLE_DEFINITION);
+    as->rz_var->variable_name = "rz";
+    as->rz_var->variable_value = init_ast(AST_FLOAT);
+    as->rz_var->variable_type = init_ast(AST_TYPE);
+    as->rz_var->variable_type->type_value = "float";
+    as->rz_var->variable_value->float_value = a->rz;
+    dynamic_list_append(obj_children, as->rz_var);
+
     as->ast_variable_this = init_ast(AST_VARIABLE_DEFINITION);
     as->ast_variable_this->variable_type = init_ast(AST_TYPE);
     as->ast_variable_this->variable_type->type_value = "object";
     as->ast_variable_this->variable_name = object->variable_name;
     as->ast_variable_this->variable_value = object;
+
+    printf("Created actor object\n");
 
     return object;
 }
@@ -122,6 +151,8 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_
         runtime_visit(HERMES_RUNTIME, as->init_source_ast_tree);
     }
 
+    printf("Done init actor\n");
+
     return as;
 }
 
@@ -154,6 +185,11 @@ void actor_scriptable_tick(actor_T* self)
 
     self->x = actor_scriptable->x_var->variable_value->float_value;
     self->y = actor_scriptable->y_var->variable_value->float_value;
+    self->x = actor_scriptable->x_var->variable_value->float_value;
+    
+    self->rx = actor_scriptable->rx_var->variable_value->float_value;
+    self->ry = actor_scriptable->ry_var->variable_value->float_value;
+    self->rz = actor_scriptable->rz_var->variable_value->float_value;
 
     self->dx = actor_scriptable->dx_var->variable_value->float_value;
     self->dy = actor_scriptable->dy_var->variable_value->float_value;
@@ -170,6 +206,13 @@ void actor_scriptable_tick(actor_T* self)
     actor_scriptable->y_var->variable_value->float_value = self->y;
     actor_scriptable->x_var->variable_value->int_value = self->x;
     actor_scriptable->y_var->variable_value->int_value = self->y;
+
+    actor_scriptable->rx_var->variable_value->float_value = self->rx;
+    actor_scriptable->ry_var->variable_value->float_value = self->ry;
+    actor_scriptable->rz_var->variable_value->float_value = self->rz;
+    actor_scriptable->rx_var->variable_value->int_value = self->rx;
+    actor_scriptable->ry_var->variable_value->int_value = self->ry;
+    actor_scriptable->rz_var->variable_value->int_value = self->rz;
 
     if (actor_scriptable->tick_source_scope != (void*) 0)
     {

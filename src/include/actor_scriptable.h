@@ -30,6 +30,10 @@ typedef struct ACTOR_SCRIPTABLE_STRUCT
     AST_T* dy_var;
     AST_T* friction_var;
 
+    AST_T* rx_var;
+    AST_T* ry_var;
+    AST_T* rz_var;
+
     AST_T* ast_object;
     AST_T* ast_variable_this;
 } actor_scriptable_T;

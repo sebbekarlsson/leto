@@ -68,8 +68,12 @@ static AST_T* expect_arg(const char* function_name, dynamic_list_T* args, unsign
     return ast;
 }
 
-AST_T* keyboard_press(dynamic_list_T* args)
+AST_T* keyboard_press(AST_T* self, dynamic_list_T* args)
 {
+    const char* fname = "keyboard_press";
+
+    AST_T* ast_string_name = expect_arg(fname, args, 0, AST_INTEGER);
+
     AST_T* ast_int = (AST_T*) args->items[0];
 
     AST_T* ast = init_ast(AST_BOOLEAN);
@@ -78,7 +82,7 @@ AST_T* keyboard_press(dynamic_list_T* args)
     return ast;
 }
 
-AST_T* get_intersecting(dynamic_list_T* args)
+AST_T* get_intersecting(AST_T* self, dynamic_list_T* args)
 {
     AST_T* ast_object = (AST_T*) args->items[0];
     AST_T* ast_string = (AST_T*) args->items[1];
@@ -124,7 +128,7 @@ AST_T* get_intersecting(dynamic_list_T* args)
     return init_ast(AST_NULL);
 }
 
-AST_T* actor_instantiate(dynamic_list_T* args)
+AST_T* actor_instantiate(AST_T* self, dynamic_list_T* args)
 {
     const char* fname = "actor_instantiate";
 
@@ -183,7 +187,7 @@ AST_T* actor_instantiate(dynamic_list_T* args)
     return actor_scriptable->ast_object;
 }
 
-AST_T* scene_goto(dynamic_list_T* args)
+AST_T* scene_goto(AST_T* self, dynamic_list_T* args)
 {
     const char* fname = "scene_goto";
 
@@ -194,7 +198,7 @@ AST_T* scene_goto(dynamic_list_T* args)
     return init_ast(AST_NULL);
 }
 
-AST_T* math_cos(dynamic_list_T* args)
+AST_T* math_cos(AST_T* self, dynamic_list_T* args)
 {
     const char* fname = "math_cos";
 
@@ -206,7 +210,7 @@ AST_T* math_cos(dynamic_list_T* args)
     return ast_result;
 }
 
-AST_T* math_sin(dynamic_list_T* args)
+AST_T* math_sin(AST_T* self, dynamic_list_T* args)
 {
     const char* fname = "math_sin";
 
@@ -218,7 +222,7 @@ AST_T* math_sin(dynamic_list_T* args)
     return ast_result;
 }
 
-AST_T* time_now(dynamic_list_T* args)
+AST_T* time_now(AST_T* self, dynamic_list_T* args)
 {
     AST_T* ast_result = init_ast(AST_INTEGER);
     ast_result->int_value = (int) time(NULL);
