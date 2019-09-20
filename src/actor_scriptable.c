@@ -109,7 +109,7 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_
 
     if (as->init_source)
     {
-        as->init_source_scope = init_hermes_scope();
+        as->init_source_scope = init_hermes_scope(0);
     }
     else
     {
@@ -118,7 +118,7 @@ actor_scriptable_T* init_actor_scriptable(float x, float y, float z, char* init_
 
     if (as->tick_source)
     {
-        as->tick_source_scope = init_hermes_scope();
+        as->tick_source_scope = init_hermes_scope(0);
     }
     else
     {
