@@ -1,7 +1,7 @@
 exec = leto.out
 sources = $(wildcard src/*.c)
 objects = $(sources:.c=.o)
-flags = -g -lsqlite3 -lathena -lspr -lcoelum -ljson -lhermes -I../coelum/GL/include -lglfw -ldl -lcglm -lm -lopenal -lpthread -laudio
+flags = -g `pkg-config --cflags coelum` -lsqlite3 -lathena -lhermes -I../coelum/GL/include `pkg-config --libs coelum`
 
 
 $(exec): $(objects)
